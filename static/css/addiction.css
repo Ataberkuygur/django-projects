@@ -1,0 +1,33 @@
+#addiction_top_row {
+    border-bottom: 1px solid black !important;
+    padding-bottom: 10px !important;
+}
+
+#addiction_top {
+    border-right: 1px solid black !important;
+}
+
+@media only screen and (max-width: 700px) {
+    #addiction_top {
+        border-right: 0px !important;
+        margin-bottom: 3% !important;
+    }
+    #chart_month_collapse {
+        width: 70% !important;
+    }
+    #chart_month_title {
+        width: 30% !important;
+    }
+    #chart_week_collapse {
+        width: 70% !important;
+    }
+    #chart_week_title {
+        width: 30% !important;
+    }
+    #chart_day_collapse {
+        width: 70% !important;
+    }
+    #chart_day_title {
+        width: 30% !important;
+    }
+}

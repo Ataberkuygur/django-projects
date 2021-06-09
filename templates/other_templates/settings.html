@@ -1,0 +1,118 @@
+{% extends 'base.html' %} {% load static %} {% block title %} Hedef {% endblock %} {% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div id="custom_user_settings_row" class="col-md-9" style="background-color: rgb(222, 226, 247); height: 100% !important; padding-top: 3% !important;">
+
+            <!--Günlük Görev Hedefi Formu-->
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <h4 class="display-4">Hedef & Verim</h4>
+                    <form id="goal_form" method='POST' action="{% url 'goal_create' %}">
+                        {% csrf_token %}
+                        <div class="goal_section form-inline">
+                            <label class="label" for="">Günlük Görev Hedefi: </label>
+                            <input name="goal" class="form-control w-25 ml-2" type="number">
+                        </div>
+                        <button type="submit" class="btn btn-outline-info mt-2">Hedef Belirle</button>
+                    </form>
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                    <span class="lead  float-left">Şuanki hedef: <b>{{request.user.goal_score}}</b></span>
+                </div>
+            </div>
+            <!--Kategori Formu-->
+            <div class="row">
+                <div class="form-group col-md-7">
+                    <h4 class="display-4 ">Kategori</h4>
+                    <form id="category_form" method='POST' action="{% url 'category_create' %}">
+                        {% csrf_token %}
+                        <div class="category_title_section form-inline ">
+                            <label class="label " for=" ">Kategori: </label>
+                            <input id="category" name="category" class="form-control w-25 ml-2" type="text">
+                        </div>
+                        <div class="category_priority_section form-inline mt-3 ">
+                            <label class="label" for=" ">Öncelik: </label>
+                            <select id="priority" class="form-control ml-3 w-25 " name="priority">
+                        <option value="1">1- Mavi</option>
+                        <option value="2">2- Yeşil</option>
+                        <option value="3">3- Turuncu</option>
+                        <option value="4">4- Gri</option>
+                        </select>
+                            <span class="text-muted ml-2"><small>1- 16 Puan</small><br><small>2- 14 Puan</small><br><small>3- 12 Puan</small><br><small>4- 10 Puan</small></span>
+                        </div>
+                        <button type="submit" class="btn btn-outline-success mt-2">Kategori Oluştur</button>
+                    </form>
+                </div>
+                <div class="col-md-5 d-flex align-items-center">
+                    <ul style="list-style:circle;">
+                        {% for category in category_list %}
+                        <li class="lead"><b>{{category}}</b></li> {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <!--Reset Bölümü-->
+            <h4 class="lead ">Sıfırlama ve Silme</h4>
+            <div class="d-inline ">
+                <button onclick="CategoryDeleteModal()" class="btn btn-outline-warning mb-3">Kategori Seç ve Sil</button>
+                <a href="{% url 'category_list_delete' %}" class="btn btn-outline-warning mb-3">Tüm Kategorileri Sil</a><br>
+            </div>
+            <div class="d-inline ">
+                <a href="{% url 'Task:task_delete_all' slug=request.user %}" class="btn btn-outline-danger">Tüm Görevleri Sil</a>
+            </div>
+
+            <!--Kategori Silme Modal-->
+            <div class="modal fade" id="categoryDeleteModal" tabindex="-1 " role="dialog " aria-labelledby="taskCreateModalLabel " aria-hidden="true ">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content ">
+                        <div class="modal-header ">
+                            <h5 class="modal-title " id="categoryDeleteModalLabel ">Kategori Sil</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="category_delete_form" class="form-group" action="{% url 'category_delete' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-category-delete d-flex form-group mt-4">
+                                    {% for category in category_list %}
+                                    <div class="row w-100">
+                                        <label class="label col-md-9" for="{{category}}">{{category}}</label>
+                                        <input id="selected_category" name="selected_category" class="form-control ml-4 col-md-2" value="{{category}}" type="radio">
+                                    </div>{% endfor %}
+                                </div>
+                        </div>
+                        <div class="modal-footer ">
+                            <button onclick="CategoryDelete()" class="btn btn-primary mb-2">Seçili Kategorileri Sil</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function CategoryDeleteModal() {
+        $('#categoryDeleteModal').modal('show');
+    };
+
+    function CategoryDelete() {
+        form = $('#category_delete_form');
+        form.submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                data: form.serialize(),
+                url: form.attr('action'),
+                success: function(data) {
+                    form.submit();
+                    location.reload();
+                }
+            })
+
+        });
+    };
+</script>
+{% endblock %}

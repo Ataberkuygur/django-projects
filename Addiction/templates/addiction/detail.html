@@ -1,0 +1,107 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Bağımlılık{% endblock title %} {% block content %}
+<script src="path/to/chartjs/dist/Chart.js"></script>
+<div class="container h-100" style="background-color: lightgray !important;">
+    <div id="addiction_top_row" class="row d-flex justify-content-center">
+        <h4 class="display-4">{{addiction.name}}</h4>
+        <div class="col-md-12">
+            <div class="row w-100">
+                <div id="addiction_top" class='col-md-6 d-flex justify-content-start'>
+                    <div style="display:  none !important;"><input value="{{addiction_day}}" id="addiction_day"></input>
+                    </div>
+                    <div id="chart_day_title" class="col-md-5 d-flex justify-content-center align-items-center">
+                        <h6 class="display-4">Gün</h6>
+                    </div>
+                    <div id="chart_day_collapse" class="col-md-7">
+                        <canvas id="chart_day" width="250" height="250" style="height: 250px !important; width: 250px !important;"></canvas>
+                    </div>
+                </div>
+                <div class='col-md-6 d-flex justify-content-start'>
+                    <div style="display:  none !important;"><input value="{{addiction_week}}" id="addiction_week"></input>
+                    </div>
+                    <div id="chart_week_collapse" class="col-md-7">
+                        <canvas id="chart_week" width="250" height="250" style="height: 250px !important; width: 250px !important;"></canvas>
+                    </div>
+                    <div id="chart_week_title" class="col-md-2 d-flex justify-content-center align-items-center">
+                        <h6 class="display-4">Hafta</h6>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <div style="display:  none !important;"><input value="{{addiction_month}}" id="addiction_month"></input>
+        </div>
+        <div class="col-md-7">
+            <div class="row">
+                <div id="chart_month_title" class="col-md-5 d-flex justify-content-center align-items-center">
+                    <h6 class="display-4">Ay</h6>
+                </div>
+                <div id="chart_month_collapse" class="col-md-7">
+                    <canvas id="chart_month" width="250" height="250" style="height: 250px !important; width: 250px !important;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var day = document.getElementById('addiction_day').value;
+    var week = document.getElementById('addiction_week').value;
+    var month = document.getElementById('addiction_month').value;
+    var chart_day = document.getElementById('chart_day').getContext('2d');
+
+    //Gün İstatistikleri
+    var myChart = new Chart(chart_day, {
+        type: 'doughnut',
+        data: {
+            labels: ['Biten Gün Sayısı', 'Geriye Kalan Gün Sayısı'],
+            datasets: [{
+                data: [day, 365 - day],
+                backgroundColor: [
+                    '#326ecf',
+                    '#1a1c1a',
+                ],
+                borderWidth: 2,
+            }],
+        },
+
+    });
+
+    //Hafta İstatistikleri
+    var myChart = new Chart(chart_week, {
+        type: 'doughnut',
+        data: {
+            labels: ['Biten Hafta Sayısı', 'Geriye Kalan Hafta Sayısı'],
+            datasets: [{
+                data: [week, 52 - week],
+                backgroundColor: [
+                    '#1da826',
+                    '#1a1c1a',
+                ],
+                borderWidth: 2,
+            }],
+        },
+
+    });
+
+    //Ay İstatistikleri
+    var chart_month = document.getElementById('chart_month').getContext('2d');
+    var myChart = new Chart(chart_month, {
+        type: 'doughnut',
+        data: {
+            labels: ['Biten Ay Sayısı', 'Geriye Kalan Ay Sayısı'],
+            datasets: [{
+                data: [month, 12 - month],
+                backgroundColor: [
+                    'orange',
+                    '#1a1c1a',
+                ],
+                borderWidth: 2,
+            }],
+        },
+
+    });
+</script>
+{% endblock content %}

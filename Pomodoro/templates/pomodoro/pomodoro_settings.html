@@ -1,0 +1,118 @@
+{% extends 'base.html' %} {% block title %} Pomodoro Settings {% endblock %} {% block content %}
+<div id="cover">
+    <!--Logo Container-->
+    <div style="display: none !important;" id="logo_container" class="container d-flex justify-content-center align-items-center">
+        <h4 id="pomodoro_settings_title" class="text-center mt-5 text-white">WAY TO ACHIEVE</h4>
+    </div>
+
+
+
+    <div style="display: none !important;" id="pomodoro_settings_container" class="container">
+        <div class="row d-flex justify-content-end">
+            <a href="{% url 'Task:index' %}" class="btn btn-outline-danger btn-md">&larr;</a>
+        </div>
+        <h4 id="pomodoro_settings_form_title" class="text-center mt-5">Pomodoro Sürenizi Belirleyin</h4>
+        <div class="row d-flex justify-content-center" style="height: 400px !important;">
+            <form class="form-inline" id="pomodoro_create_form" method='POST' action="{% url 'Pomodoro:settings' %}">
+                {% csrf_token %}
+                <div class="col-md-6 float-right">
+                    <h5 class="lead mt-2">Çalışma Süresi</h5>
+                    <div class="row">
+                        <label id="pomodoro_title_label" class="label col-md-3 mt-2">Başlık</label>
+                        <input class="form-control col-md-6 ml-1" id="title_input" name="title_input" type="text">
+                    </div>
+                    <div class="row mt-2">
+                        <label id="pomodoro_time_label" class="label col-md-3 mt-2">Süre</label>
+                        <input placeholder="Dakika" class="form-control col-md-3 ml-1" id="minute_input" name="minute_input" type="number">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="lead mt-4">Dinlenme Süresi</h5>
+                    <div class="row">
+                        <label id="pomodoro_time_label" class="label col-md-3">Süre</label>
+                        <input placeholder="Dakika" class="form-control col-md-3 ml-1" id="rest_m_input" name="rest_m_input" type="number">
+                        <input placeholder="Saniye" class="form-control col-md-3 ml-1" id="rest_s_input" name="rest_s_input" type="number">
+                    </div>
+                </div>
+                <button id="pomodoro_create_button" onclick='PomodoroCreate()' class="btn btn-lg btn-outline-info mt-2">Pomodoroya Başla!</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<!--Pomodoro Settings Javascript-->
+<script>
+    $(document).ready(function() {
+
+
+        number = 0;
+        number2 = 0;
+
+        logohideshow = setInterval(LogoHideShow, 500)
+
+        function LogoHideShow() {
+            if (number2 == 4) {
+                $('body').css({
+                    backgroundColor: 'white'
+                })
+                $('#logo_container').html('');
+                clearInterval(logohideshow)
+                formhideshow = setInterval(FormHideShow, 200)
+
+                function FormHideShow() {
+                    if (number == 1) {
+                        $('#pomodoro_settings_container').css({
+                            display: '',
+                        })
+                        clearInterval(formhideshow)
+                    } else {
+                        number++;
+                        $('#pomodoro_settings_container').css({
+                            display: 'none',
+                        })
+                    }
+
+                }
+            } else if (number2 == 3) {
+                number2++;
+                $('#logo_container').fadeOut('slow')
+            } else if (number2 == 2) {
+                $('body').css({
+                    backgroundColor: 'black'
+                })
+                $('#logo_container').fadeIn('slow');
+                wait_second = 0
+                wait = setInterval(WaitSeconds, 10)
+
+                function WaitSeconds() {
+                    if (wait_second == 150) {
+                        wait_second++;
+                        clearInterval(wait)
+                        number2++;
+                    } else {
+                        wait_second++;
+                    }
+                }
+            } else {
+                number2++;
+                $('#logo_container').fadeOut();
+            }
+        }
+
+
+
+
+
+
+        $('nav').animate({
+            opacity: '0%',
+            zIndex: '-1',
+        }, 500).animate({
+            paddingTop: '0px',
+        })
+
+
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+#minute_cover {
+    width: 100% !important;
+    height: 50% !important;
+    border-radius: 12px !important;
+}
+
+#second_cover {
+    width: 100% !important;
+    height: 50% !important;
+    border-radius: 12px !important;
+}
+
+#minute {
+    font-size: 170px !important;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+#seconds {
+    font-size: 170px !important;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+#timing {
+    margin-top: 15% !important;
+}
+
+@media only screen and (max-width: 700px) {
+    body {
+        overflow-x: hidden !important;
+    }
+    #pomodoro_title_cover {
+        width: 50% !important;
+        margin-right: 40% !important;
+    }
+    #minute_cover {
+        height: 30% !important;
+        width: 40% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    #minute {
+        font-size: 100px !important;
+    }
+    #second_cover {
+        height: 30% !important;
+        width: 40% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    #seconds {
+        font-size: 100px !important;
+    }
+}

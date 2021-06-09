@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block title %} Profil {% endblock %} {% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="row" style="margin-top: 10% !important;">
+        <div class="avatar d-flex justify-content-center align-items-center col-md-12" style="height: 100px;">
+            <img style="background-color: black !important; height: 150px !important;" class="img-fluid rounded-circle" src="{{profile.user.avatar.url}}" alt="">
+        </div>
+        <div class="col-md-12 mt-5">
+            {% if not profile.user == request.user %} {% if request.user in profile.user.friends.all %}
+            <a href="{% url 'Friendship:send_request' profile.user %}" class="btn btn-outline-danger">Arkadaşlıktan Çıkar</a>{% else %} {% if friendship.status == 'send' %}
+            <a href="{% url 'Friendship:send_request' profile.user %}" class="btn btn-outline-success">İstek Gönderildi</a> {% else %}
+            <a href="{% url 'Friendship:send_request' profile.user %}" class="btn btn-outline-success">Arkadaş Ekle</a> {% endif %} {% endif %} {% endif %}
+        </div>
+        <div class="friends col-md-12 d-flex justify-content-center" style="height: 70px !important;">
+            <p class="text-center rounded" style="background-color: black !important;"><span class="font-weight-bold rounded p-2 text-white" style="font-size: 22px !important;"><span style="cursor: pointer;" data-toggle="modal" data-target="#friendsModal">Arkadaşlar</span></span><br><span class="text-white pb-2">{{profile.user.get_friends_count}}</span></p>
+            <div class="modal fade" id="friendsModal" tabindex="-1" role="dialog" aria-labelledby="friendsModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content bg-dark text-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="friendsModalLabel">Arkadaşlar</h5>
+                            <button type="button" class="close text-danger" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                        </div>
+                        <div class="modal-body">
+                            {% for friend in profile.user.friends.all %}
+                            <div id="{{friend.get_profile.get.slug}}" class="row w-100 p-0">
+                                <div class="card-header bg-dark text-white w-100" style="height: 50px !important;">
+                                    <a href="{{friend.profile_set.get.get_absolute_url}}" class="card-link text-white"><span class="float-left">{{friend.username}}</span></a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="username col-md-12">
+            <label class="font-weight-bold" style="font-size: 18px !important;">Kullanıcı Adı:</label><span class="ml-4">{{profile.user.username}}</span>
+        </div>
+
+        <div class="email col-md-12">
+            <label class="font-weight-bold" style="font-size: 18px !important;">Email:</label><span class="ml-4">{{profile.user.email}}</span>
+        </div>
+        <div class="email col-md-12">
+            <label class="font-weight-bold" style="font-size: 18px !important;">Hedef:</label><span class="ml-4">{{profile.user.goal_score}}</span>
+        </div>
+        {% if profile.user == request.user %}
+        <div class="button col-md-12 d-flex justify-content-center">
+            <a href="{{request.user.profile_set.get.get_logout_url}}" class="btn btn-outline-danger btn-lg">Çıkış Yap</a>
+            <a href="{% url 'settings' request.user.username %}" class="btn btn-outline-dark btn-lg ml-5">Ayarlar</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

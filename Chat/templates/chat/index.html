@@ -1,0 +1,52 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Kişiler{% endblock title %} {% block content %}
+<div class="container-fluid pl-0 pr-0 mt-0 pt-0">
+
+    <div class="row d-flex justify-content-between">
+        <div class="col-md-4 people_collapse_chat_room pl-0 pr-0" style="border-right: 1px solid black !important;" id="people_collapse">
+            <div class="card-header d-flex justify-content-center align-items-center mt-0" style="height: 70px !important; font-size: 26px !important;font-family: 'Roboto', sans-serif;">Arkadaşlar</div>
+            {% for user in user_list %}
+            <a id="people_link" href="{% url 'Chat:start_chat' user.username %}" style="text-decoration: none !important;">
+                <div id="people" class="card-header d-flex align-items-center justify-content-between text-white">
+                    {% if user in room_message_owners %}
+                    <div class="w-50"><img id="person_image" class="rounded-circle" src="{{user.avatar.url}}">|<span class="font-weight-bold">{{user.username}}</span><small class="font-weight-bold ml-2 text-warning" style="font-size: 13.5px !important;">- Mesaj</small></div>
+                    {% else %}
+                    <div class="w-50"><img id="person_image" class="rounded-circle" src="{{user.avatar.url}}">|<span>{{user.username}}</span></div>
+                    {% endif %} {%if user.last_login != None %}
+                    <div style="font-size: 14px !important;">{{ user.last_login|timesince }} önce</div>{% endif%}</div>
+            </a>
+            {% endfor %}
+        </div>
+        <div id="chat" class="col-md-8 pl-0" style="width: 60% !important; background-color: rgb(226, 226, 226) !important;">
+        </div>
+    </div>
+</div>
+{{ room_name|json_script:"room-name" }}
+<script>
+    const roomName = JSON.parse(document.getElementById("room-name").textContent);
+    const conversation = document.getElementById('messages')
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/")
+    const sendButton = document.getElementById('send')
+    const input = document.getElementById('message_input')
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data)
+        var message = '<div class="row mt-2 ml-2"><div class="card-header" id="message_box">' + data.message + '</div><div id="time" class="d-flex align-items-end"><small class="float-left mb-1 ml-1">Bugün</small></div></div>'
+        conversation.innerHTML += message;
+    }
+    chatSocket.onclose = function(e) {
+        console.error('Socket beklenmedik bir şekilde kapandı!')
+    }
+    input.focus();
+    input.onkeyup = function(e) {
+        if (e.keyCode === 13) {
+            sendButton.click();
+        }
+    }
+    sendButton.onclick = function(e) {
+        const message = input.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+        }))
+    }
+</script>
+{% endblock content %}

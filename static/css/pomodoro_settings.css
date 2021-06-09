@@ -1,0 +1,47 @@
+#pomodoro_settings_form_title {
+    margin-top: 0px !important;
+    font-family: 'Raleway', sans-serif;
+    font-size: 70px !important;
+}
+
+#pomodoro_settings_title {
+    font-size: 120px !important;
+    margin-top: 15% !important;
+}
+
+#pomodoro_title_label {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 20px !important;
+}
+
+#pomodoro_time_label {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 20px !important;
+}
+
+#pomodoro_rest_time_label {
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 20px !important;
+}
+
+@media only screen and (max-width: 700px) {
+    #pomodoro_settings_container {
+        margin-top: -50px !important;
+    }
+    #second_input {
+        margin-top: 10px !important;
+    }
+    #rest_s_input {
+        margin-top: 10px !important;
+    }
+    #pomodoro_settings_title {
+        font-size: 75px !important;
+        margin-top: 45% !important;
+    }
+    #pomodoro_settings_form_title {
+        font-size: 65px !important;
+    }
+    #custom_user_settings_row {
+        height: 1000px !important;
+    }
+}

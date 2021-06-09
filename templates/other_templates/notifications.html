@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block title %} Etkileşimler {% endblock title %} {% block content %}
+<div class='row'>
+    <div class='col-md-3'>
+    </div>
+    <div class='col-md-6 bg-secondary rounded'>
+        {% if requests %} {% for request in requests %}
+        <div class="row d-flex justify-content-center mt-2 mb-1">
+            <div id="friendship_request_box" class="bg-dark text-white">
+                <span class="ml-2"><a href="{% url 'User:profile' request.sender %}" class="text-white" style="text-decoration: none !important;">{{request.sender}}</a> kişisinden arkadaşlık isteğin var</span>
+                <a href="{% url 'Friendship:accept_request' request.sender %}" class="btn btn-outline-info mr-2">Kabul Et</a>
+            </div>
+        </div>
+        {% endfor %} {% endif %} {% for user in not_seen_message_users %}
+        <div class="row d-flex justify-content-center mt-2 mb-1">
+            <div id="friendship_request_box" class="bg-dark text-white">
+                <span class="ml-2"><a href="{% url 'User:profile' user.username %}" class="text-white" style="text-decoration: none !important;">{{user}}</a> kişisinden okunmamış mesajın var</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class='col-md-3'>
+    </div>
+</div>
+{% endblock content %}

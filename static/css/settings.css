@@ -1,0 +1,8 @@
+@media only screen and (max-width: 720px) {
+    #priority {
+        width: 50% !important;
+    }
+    #category {
+        width: 50% !important;
+    }
+}

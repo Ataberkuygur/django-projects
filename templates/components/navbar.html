@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-sm navbar-dark" style="background-color: black !important;">
+    <div class="container">
+        <a href="{% url 'Task:index' %}" class="navbar-brand">WAY TO ACHIEVE</a>
+        <button class="navbar-toggler" data-toggle='collapse' data-target='#navbarCollapse'>
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav ml-auto p-1">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="{% url 'Task:index' %}">TODO LIST</a>
+                </li>
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="{% url 'Pomodoro:settings' %}">POMODORO</a>
+                </li>
+                <li class="nav-item mt-1">
+                    <a class="nav-link" href="{% url 'Chat:index' %}">MESAJLAR</a>
+                </li>
+                <li class="nav-item {% if notification_count %}form-inline {% else %}mt-1{% endif %}">
+                    <a class="nav-link" href="{% url 'notifications' request.user.username %}">ETKİLEŞİMLER</a> {% if notification_count %}
+                    <span id="notification_count" class="bg-info text-white rounded-circle d-flex justify-content-center h-50"><span class="mr-1">{{notification_count}}</span></span>
+                    {% endif %}
+                </li>
+                <li class="nav-item mt-1 ">
+                    <a class="nav-link " href="{% url 'Addiction:index' %} ">YENİLEN</a>
+                </li>
+                <li class="nav-item mt-1 ">
+                    <a class="nav-link " href="{% url 'explore' %} ">KEŞİF</a>
+                </li>
+                {% if request.user.avatar == 'avatar/default.png' %}
+                <li class="nav-item ml-1 mt-1 ">
+                    <a href="{{request.user.profile_set.get.get_absolute_url}} " class="nav-link ">PROFİL</a>
+                </li>
+                {% else %}
+                <li class="nav-item ml-3 " style="margin-top: -0.6% !important; ">
+                    <a id="avatar " href="{{request.user.profile_set.get.get_absolute_url}} "><img class="rounded-circle " style="width: 50px !important; height: 50px !important; " src="{{request.user.avatar.url}} " alt=" "></a>
+                </li>
+                {% endif %} {% elif not request.user.is_authenticated %}
+                <li class="nav-item mt-1 ">
+                    <a class="nav-link " href="{% url 'User:login' %} ">GİRİŞ YAP</a>
+                </li>
+                <li class="nav-item mt-1 ">
+                    <a class="nav-link " href="{% url 'User:register' %} ">KAYIT OL</a>
+                </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>

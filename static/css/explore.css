@@ -1,0 +1,14 @@
+#user_input:hover,
+#user_input:focus {
+    background-color: rgb(29, 29, 29) !important;
+    color: white !important;
+    transition: all 0.3s !important;
+}
+
+#user_input {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+#user_search_button {
+    font-family: 'Montserrat', sans-serif !important;
+}

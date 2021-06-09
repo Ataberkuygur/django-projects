@@ -1,0 +1,53 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title %} Kayıt Ol {% endblock %} {% block content %}
+<div class="container" style="background-color: lightgray !important; height: 100% !important;">
+    <div class="form-group p-5">
+        <h4 class="display-4 text-center">Kayıt Formu</h4>
+        <div class="row d-flex justify-content-center">
+            <form class="col-md-8" method='POST' enctype="multipart/form-data">
+                {% csrf_token %} {% for field in form.fields %} {% if field == 'username' %}
+                <div class="username_form row d-flex">
+                    <div id="username_label" class="username_label col-md-4 d-flex justify-content-end">
+                        <label class="mt-2">Kullanıcı Adı</label>
+                    </div>
+                    <div class="username_input col-md-5 d-flex justify-content-start">
+                        <input id="username_input" name="{{field}}" class="form-control" type="text">
+                    </div>
+                </div>
+                {% endif %} {% if field == 'avatar' %}
+                <div class="password_form row d-flex mt-3">
+                    <div id="password_label" class="password_label col-md-4 d-flex justify-content-end">
+                        <label class="mt-2">Avatar</label>
+                    </div>
+                    <div class="password_input col-md-5 d-flex justify-content-start">
+                        <input id="avatar_input" name="{{field}}" class="form-control" type="file">
+                    </div>
+                </div>
+                {% endif %} {% if field == 'password1' %}
+                <div class="password_form row d-flex mt-3">
+                    <div id="password_label" class="password_label col-md-4 d-flex justify-content-end">
+                        <label class="mt-2">Şifre</label>
+                    </div>
+                    <div class="password_input col-md-5 d-flex justify-content-start">
+                        <input id="password_input" name="{{field}}" class="form-control" type="password">
+                    </div>
+                </div>
+                {% endif %} {% if field == 'password2' %}
+                <div class="password_form row d-flex mt-3">
+                    <div id="password_label" class="password_label col-md-4 d-flex justify-content-end">
+                        <label class="mt-2">Tekrar Şifre</label>
+                    </div>
+                    <div class="password_input col-md-5 d-flex justify-content-start">
+                        <input id="password_confirm_input" name="{{field}}" class="form-control" type="password">
+                    </div>
+                </div>
+                {% endif %} {% endfor %}
+                <div class="login_button row d-flex mt-3">
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <button class="btn btn-outline-dark mt-2" type="submit">Kayıt Ol</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

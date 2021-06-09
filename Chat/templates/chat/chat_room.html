@@ -1,0 +1,104 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Kişiler{% endblock title %} {% block content %}
+<div class="container-fluid pl-0 pr-0 mt-0 pt-0">
+    <div class='row d-flex justify-content-end align-items-end'>
+        <a href="{% url 'Chat:index' %}" class="btn btn-outline-danger" id="back_to_chat_index">&larr;</a>
+    </div>
+    <div id="chat_room_main" class="row d-flex justify-content-between">
+        <div class="col-md-4 people_collapse_chat_room pl-0 pr-0" style="border-right: 1px solid black !important;" id="people_collapse">
+            <div class="card-header d-flex justify-content-center align-items-center font-weight-bold mt-0" style="height: 70px !important; font-size: 26px !important;font-family: 'Roboto', sans-serif;">Arkadaşlar</div>
+            {% for user in user_list %}
+            <a id="people_link" href="{% url 'Chat:start_chat' user.username %}" style="text-decoration: none !important;">
+                <div id="people" class="card-header d-flex align-items-center justify-content-between text-white">
+                    {% if user in room_message_owners %}
+                    <div class="w-75"><img id="person_image" class="rounded-circle" src="{{user.avatar.url}}">|<span class="font-weight-bold">{{user.username}}</span><small class="font-weight-bold ml-2 text-warning" style="font-size: 13.5px !important;">- Mesaj</small></div>
+                    {% else %}
+                    <div class="w-75"><img id="person_image" class="rounded-circle" src="{{user.avatar.url}}">|<span>{{user.username}}</span></div>
+                    {% endif %} {%if user.last_login != None %}
+                    <div style="font-size: 14px !important;">{{ user.last_login|timesince }} önce</div>{% endif%}</div>
+            </a>
+            {% endfor %}
+        </div>
+        <div id="chat" class="col-md-8 pl-0">
+            {% if room.first_user == request.user %}
+            <div id="chat_person" class="card-header d-flex align-items-center text-white">
+                <a href="{{room.second_user.profile_set.get.get_absolute_url}}" class="card-link text-white">
+                    <img style="width: 15% !important" class="rounded-circle" src="{{ room.second_user.avatar.url }}" alt=""> | {{ room.second_user }}</span>
+                </a>
+            </div>
+            {% else%}
+            <div id="chat_person" class="card-header d-flex align-items-center text-white">
+                <a href="{{room.first_user.profile_set.get.get_absolute_url}}" class="card-link text-white">
+                    <img style="width: 15% !important" class="rounded-circle" src="{{ room.first_user.avatar.url }}" alt=""> | {{ room.first_user }}</span>
+                </a>
+            </div>
+            {% endif %}
+            <div id="messages">
+                {% for message in message_list %} {% if message.user == request.user %}
+                <div class="row mt-2 mr-2 d-flex justify-content-end">
+                    <div id="time" class='d-flex align-items-end'>
+                        <small class="mb-1 mr-1 ">{{ message.get_short_date }}</small>
+                    </div>
+                    <div class="card-header pr-2 pl-2" id="message_box1">
+                        <div style="word-wrap: break-word;">{{message.content}}</div>
+                    </div>
+                    <div id="details" style="font-size: 12px;" class="d-flex align-items-end ml-1"><a href="{% url 'Chat:delete_message' message.id %}" class="text-danger font-weight-bold">x</a></div>
+                </div>
+                {% else %}
+                <div class="row mt-2 ml-2">
+                    <div class="card-header" id="message_box2">
+                        <div style="word-wrap: break-word;">{{message.content}}</div>
+                    </div>
+                    <div id="time" class="d-flex align-items-end"><small class="float-left mb-1 ml-1">{{ message.get_short_date }}</small></div>
+                </div>
+                {% endif %} {% endfor %}
+            </div>
+            <div id="message_inputs" class="card-footer d-flex align-items-center">
+                <div class="d-flex justify-content-center w-100 m-0 p-0">
+                    <input id="message_input" class="form-control" type="text">
+                </div>
+                <i id="send" class="fa fa-paper-plane text-dark ml-auto mr-4"></i>
+            </div>
+        </div>
+    </div>
+</div>
+{{ room_name|json_script:"room-name" }} {{ request.user.username|json_script:"user" }}
+<script>
+    const roomName = JSON.parse(document.getElementById("room-name").textContent);
+    const user = JSON.parse(document.getElementById('user').textContent);
+    const conversation = document.getElementById('messages');
+    const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + roomName + "/");
+    const sendButton = document.getElementById('send');
+    const input = document.getElementById('message_input');
+
+    var isRecord = false
+
+    chatSocket.onmessage = function(e) {
+        conversation.scrollTop = conversation.scrollHeight
+        const data = JSON.parse(e.data)
+        console.log(data.created_date)
+        if (user == data.user) {
+            var message = '<div class="row mt-2 mr-2 d-flex justify-content-end"><div id="time" class="d-flex align-items-end"><small class="float-left mb-1 mr-1">' + data.created_date + '</small></div><div class="card-header" id="message_box1">' + data.message + '<i class="fa fa-settings"></i></div></div>'
+        } else {
+            var message = '<div class="row mt-2 ml-2"><div class="card-header" id="message_box2">' + data.message + '</div><div id="time" class="d-flex align-items-end"><small class="float-left mb-1 ml-1">' + data.created_date + '</small></div></div>'
+        }
+        conversation.innerHTML += message;
+        conversation.scrollTop = conversation.scrollHeight
+    }
+    chatSocket.onclose = function(e) {
+        console.error('Socket beklenmedik bir şekilde kapandı!')
+    }
+    input.onkeyup = function(e) {
+        if (e.keyCode === 13) {
+            sendButton.click();
+        }
+    }
+    sendButton.onclick = function(e) {
+        const message = input.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+        }))
+        input.value = '';
+    }
+    conversation.scrollTop = conversation.scrollHeight
+</script>
+{% endblock content %}

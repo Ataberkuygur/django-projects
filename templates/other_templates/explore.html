@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block title %} Keşif {% endblock %} {% block style %} {% endblock %} {% block content %}
+<div class="container">
+
+    <div class="row d-flex justify-content-center mt-4">
+        <div class="col-md-6 float-left" style="border-right: 1px solid black !important;">
+            <form class="form-inline" method="GET">
+                <input name="user_input" id="user_input" placeholder="Kişi ara..." class="form-control w-75 p-2" type="search">
+                <button id="user_search_button" type="submit" class="btn btn-dark ml-2">Ara</button>
+            </form>
+            {% if users %} {% for user in users %}
+            <a href="{{user.profile_set.get.get_absolute_url}}" style="text-decoration: none !important; color: black !important;">
+                <div id='filtered_user' class="card-header text-white rounded mt-2" style="background-color: black !important;"><img class="rounded-circle" style="width: 15% !important;" src="{{user.avatar.url}}" alt=""> | {{user}}</div>
+            </a>
+            {% endfor %} {% endif %}
+        </div>
+        <div class="col-md-6 float-right">
+            <form class="form-inline" method="GET">
+                <input name="group_input" id="user_input" placeholder="Grup ara..." class="form-control w-75 p-2" type="search">
+                <button id="group_search_button" type="submit" class="btn btn-dark ml-2">Ara</button>
+            </form>
+            {% if groups %} {% for group in groups %}
+            <a href="{{group.get_absolute_url}}" style="text-decoration: none !important; color: black !important;">
+                <div id='filtered_user' class="card-header text-white rounded mt-2" style="background-color: black !important;">{{group}}</div>
+            </a>
+            {% endfor %} {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

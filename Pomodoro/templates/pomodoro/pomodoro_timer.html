@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block title %} Pomodoro Timing {% endblock %} {% block content %}
+<div class="cover" style="background: linear-gradient(to right, black 30%, #eebb13);">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div id="pomodoro_title_cover">
+                <h4 class="display-4 text-white mt-2" id="pomodoro_title"></h4>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center" style="height: 700px !important;">
+            <div class="col-md-5">
+                <div class="timing d-flex justify-content-center" style="margin-top: 15% !important;">
+                    <div id="minute_cover" class="bg-secondary p-3">
+                        <span id="minute" class="text-white"></span>
+                    </div>
+                    <div id="second_cover" class="bg-secondary p-3 ml-4 ">
+                        <span id="seconds" class="text-white"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input value='{{title}}' id="title_input" type="hidden">
+<input value='{{minutes}}' id="minute_input" type="hidden">
+<input value='{{rest_minutes}}' id="rest_m_input" type="hidden">
+<input value='{{seconds}}' id="second_input" type="hidden">
+<input value='{{rest_seconds}}' id="rest_s_input" type="hidden"> {% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% load static %} {% block title %}Bağımlılık{% endblock title %} {% block content %}
+<script src="path/to/chartjs/dist/Chart.js"></script>
+<div class="container h-100" style="background-color: lightgray !important;">
+    <div class="row p-4">
+        <div class="col-md-6">
+            <div class="card">
+                {% for addiction in addictions %}
+                <div class="card-header">
+                    <a href="{{addiction.get_absolute_url}}" class="card-link text-dark">{{addiction.name}}</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form class="form-group" method="POST">
+                <h6 class="lead">Bırakmak istediğiniz bağımlılık</h6>
+                {% csrf_token %} {% for field in form.fields %}
+                <input name='{{field}}' class="form-control w-50" type="text"> {% endfor %}
+                <button class="btn btn-outline-dark mt-2" type="submit">Oluştur</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

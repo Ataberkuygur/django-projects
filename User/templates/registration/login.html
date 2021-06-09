@@ -1,0 +1,40 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block title %} Giriş Yap {% endblock %} {% block content %}
+<div class="container" style="background-color: lightgray !important; height: 100% !important;">
+    <div class="form-group p-5">
+        <h4 class="display-4 text-center">Giriş Formu</h4>
+        <div class="row d-flex justify-content-center">
+            {% if error_message %}
+            <div class="col-md-6 rounded bg-light d-flex justify-content-center align-items-center" style="border: 1px solid rgb(235, 83, 83); height: 50px !important;">
+                <span class="lead" style='font-size: 24px !important;'>{{error_message}}</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row d-flex justify-content-center mt-2">
+            <form class="col-md-8" method='POST' enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="username_form row d-flex">
+                    <div id="username_label" class="username_label col-md-4 d-flex justify-content-end">
+                        <label class="mt-2">Kullanıcı Adı</label>
+                    </div>
+                    <div class="username_input col-md-8 d-flex justify-content-start">
+                        <input id="username_input" class="form-control w-50" name="username" type="text">
+                    </div>
+                </div>
+                <div class="password_form row d-flex mt-3">
+                    <div id="password_label" class="password_label col-md-4 d-flex justify-content-end">
+                        <label class="mt-2">Şifre</label>
+                    </div>
+                    <div class="password_input col-md-8 d-flex justify-content-start">
+                        <input id="password_input" class="form-control w-50" name="password" type="password">
+                    </div>
+                </div>
+                <div class="login_button row d-flex mt-3">
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <button class="btn btn-outline-dark mt-2" type="submit">Giriş Yap</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

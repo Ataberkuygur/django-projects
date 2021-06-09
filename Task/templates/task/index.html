@@ -1,0 +1,163 @@
+﻿{% extends 'base.html' %} {% block title %} Todo List {% endblock %} {% block style %} {% endblock %} {% block content %}
+<div class="container">
+
+    {% if messages %} {% for message in messages %}
+    <div id="special_message"></div>
+    <div class="alert text-center alert-{% if message.tags == 'warning' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+         <span class="sr-only">Close</span>
+     </button> {{message}}
+    </div>
+    {% endfor %} {% endif %}
+
+    <div class="row d-flex justify-content-center mt-4">
+        <div class="col-md-8">
+            {% if request.user.is_authenticated %}
+            <div id="progress" style="background-color: #ddd !important;position: relative !important;height: 30px !important;width: 100% !important; border-radius: 5px !important;            cursor: default;">
+                <div id="bar" style="background-color: #4CAF50 !important;width: 5px !important;height: 30px !important;position: absolute !important; border-radius: 5px !important;"><span class="lead ml-2 text-white">Verim</span></div>
+            </div>
+            {% endif %}
+            <!--Modal Create Open Button-->
+            <div class="row mt-3" id="task_create_button_collapse">
+                <div id="task_create_button_div">
+                    <button id="task_create_button" name='create' type="button" class="btn btn-outline-dark btn-md" data-toggle="modal" data-target="#taskCreateModal">
+                +
+                </button>
+                </div>
+            </div>
+            <!-- Modal Task Create-->
+            <div class="modal fade" id="taskCreateModal" tabindex="-1" role="dialog" aria-labelledby="taskCreateModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="taskCreateModalLabel">Yeni Görev</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="task_create_form" class="form-group" action="{% url 'Task:task_create' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-title">
+                                    <label class="label" for="title">Başlık</label><input onclick="LetterCountCreate()" id="task_title_input" class="form-control" name="title" type="text">
+                                    <span class="mt-1" id="letters"></span>
+                                </div>
+                                <div class="form-done d-flex form-inline mt-4">
+                                    <label class="label" for="done">Bitti mi?</label><input class="form-control ml-3" name='done' type="checkbox">
+                                </div>
+                                <div class="form-category d-flex form-group mt-4">
+                                    <div class="row w-100 mt-2 d-flex justify-content-center">
+                                        {% for category in category_list %}
+                                        <div class="col-md-3 d-inline" id="category_box">
+                                            <label class="label d-block" for="{{category}}">{{category}}</label>
+                                            <input id="category" name="category" class="form-control d-block" value="{{category}}" type="radio">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-dark">Görev Oluştur</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Task List-->
+            {% for task in page_obj %} {% if task.message %} {{task.message|safe}} {% else %} {% endif %} {% if task.category.priority == '1' %}
+            <!--Kategorilerin Önem Derecesine Göre Görevleri Renklendirme
+                 1-Mavi 2-Yeşil 3-Turuncu 4-Gri -->
+            <div id="task{{task.slug}}" style="border-left: 3px solid #0299bb !important;" class="card-header mt-2">
+                {% elif task.category.priority == '2' %}
+                <div id="task{{task.slug}}" style="border-left: 3px solid #00ad35 !important;" class="card-header mt-2">
+                    {% elif task.category.priority == '3' %}
+                    <div id="task{{task.slug}}" style="border-left: 3px solid #e47423 !important;" class="card-header mt-2">
+                        {% else %}
+                        <div id="task{{task.slug}}" style="border-left: 3px solid gray !important;" class="card-header mt-2">
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <span id="task_title" ondblclick="TaskUpdate('{{task.slug}}')" class="lead">{{task.title}}</span>
+                                </div>
+                                <div id="done_or_not_button_div" class="col-md-3">
+                                    {% if task.done == False %}
+                                    <a id="done_or_not_button_yellow" href="{{task.done_or_not}}" type="button" class="btn">Tamamla</a> {% else %}
+                                    <a id="done_or_not_button_green" href="{{task.done_or_not}}" type="button" class="btn btn-success">Bitirme</a> {% endif %}
+                                </div>
+                                <div id="delete_button_div" class="col-md-3 d-flex justify-content-end">
+                                    <a onclick="TaskDelete('{{ task.slug }}')" id='{{task.slug}}' url="{% url 'Task:delete' slug=task.slug %}" id="delete_button" type="button" class="btn btn-outline-danger text-danger delete_button">Sil</a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!--Modal Task Update-->
+                        <div class="modal fade" id='done{{task.slug}}' tabindex="-1" role="dialog" aria-labelledby="taskUpdateModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="{{task.slug}}">Görev Güncelleme</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id='task_update_form' class="form-group" action="{% url 'Task:update' slug=task.slug %}" method="POST">
+                                            {% csrf_token %}
+                                            <div class="form-title">
+                                                <label class="label" for="title">Başlık</label><input onclick="LetterCountUpdate('{{task.slug}}')" id="task_title_input{{task.slug}}" value='{{task.title}}' class="form-control" name="title_update" type="text">
+                                                <span class="mt-1" id="letters{{task.slug}}"></span>
+                                            </div>
+                                            <div class="form-done d-flex form-inline mt-4">
+                                                <label class="label" for="done">Bitti mi?</label> {% if task.done == True %}
+                                                <input name='done_update' checked value='on' class="form-control ml-3" type="checkbox"> {% else %} <input value='off' class="form-control ml-3" name='done_update' type="checkbox">{% endif %}
+                                            </div>
+                                            <div class="form-category d-flex form-group mt-4">
+                                                {% for category in category_list %}
+                                                <div class="row w-100">
+                                                    <label class="label col-md-9" for="{{category}}">{{category}}</label>
+                                                    <input id="category_update" name="category_update" class="form-control ml-4 col-md-3" value="{{category}}" type="radio">
+                                                </div>{% endfor %}
+                                            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button onclick="TaskUpdateForm()" type="submit" class="btn btn-dark">Görevi Güncelle</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endfor %} {% if page_obj.has_other_pages %}
+                        <nav>
+                            <ul class="pagination mt-1">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link border-primary" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
+                                </li>
+                                {% endif %} {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link border-primary" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+
+                        <!--Secret Section(Goal and Total Score)-->
+                        <div class="col-md-1 d-flex justify-content-center" style="display: none !important;">
+                            <span id="total_score" style="display: none !important;">{{total_score}}</span> {% if request.user.goal_score != 0 %}
+                            <div id="goal" style="display: none !important;">{{request.user.goal_score}}</div>
+                            {% endif %}
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
